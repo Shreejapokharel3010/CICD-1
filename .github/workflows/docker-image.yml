@@ -1,25 +1,20 @@
 name: Docker Image CI
-
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
     
-    # Build the Docker image
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
-
-    # Publish the Docker image locally
-    - name: Run Docker container locally
+    - name: Build Docker image
+      run: docker build . --file Dockerfile --tag my-image:latest
+    
+    - name: Run Docker container
       run: |
-        docker stop my-container || true
-        docker rm my-container || true
-        docker run -d -p 80:80 --name my-container my-image-name:$(date +%s)
+        docker stop my-container 2>/dev/null || true
+        docker rm my-container 2>/dev/null || true
+        docker run -d -p 80:80 --name my-container my-image:latest
