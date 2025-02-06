@@ -7,12 +7,19 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
+    
+    # Build the Docker image
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+
+    # Publish the Docker image locally
+    - name: Run Docker container locally
+      run: |
+        docker stop my-container || true
+        docker rm my-container || true
+        docker run -d -p 80:80 --name my-container my-image-name:$(date +%s)
